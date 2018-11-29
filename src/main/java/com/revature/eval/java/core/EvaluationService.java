@@ -5,6 +5,15 @@ import java.util.List;
 import java.util.Map;
 
 public class EvaluationService {
+	
+	
+	public static void  main(String[] args) {
+		
+		System.out.println(reverse("ymereJ"));
+	} {
+		// TODO Auto-generated method stub
+
+	}
 
 	/**
 	 * 1. Without using the StringBuilder or StringBuffer class, write a method that
@@ -13,13 +22,16 @@ public class EvaluationService {
 	 * @param string
 	 * @return
 	 */
-	public String reverse(String string) {
+	
+	public static String reverse(String string) {
 		char[] reversed = new char[string.length()];
 		for (int i = reversed.length - 1, j=0; i >= 0; i--, j++) {
 			reversed[j] = string.charAt(i);
 		}
+		
 		return new String(reversed);
 	}
+	
 
 	/**
 	 * 2. Convert a phrase to its acronym. Techies love their TLA (Three Letter
