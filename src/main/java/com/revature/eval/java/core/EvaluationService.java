@@ -1,16 +1,24 @@
 package com.revature.eval.java.core;
 
 import java.time.temporal.Temporal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 public class EvaluationService {
-	
-	
-	public static void  main(String[] args) {
-		
+
+	public static void main(String[] args) {
+
 		System.out.println(reverse("ymereJ"));
-	} {
+		System.out.println(acronym("Jeremy Dion Shropshire"));
+		System.out.println(cleanPhoneNumber("123-abc-7890"));
+
+	}
+
+	{
 		// TODO Auto-generated method stub
 
 	}
@@ -22,16 +30,15 @@ public class EvaluationService {
 	 * @param string
 	 * @return
 	 */
-	
+
 	public static String reverse(String string) {
 		char[] reversed = new char[string.length()];
-		for (int i = reversed.length - 1, j=0; i >= 0; i--, j++) {
+		for (int i = reversed.length - 1, j = 0; i >= 0; i--, j++) {
 			reversed[j] = string.charAt(i);
 		}
-		
+
 		return new String(reversed);
 	}
-	
 
 	/**
 	 * 2. Convert a phrase to its acronym. Techies love their TLA (Three Letter
@@ -41,9 +48,16 @@ public class EvaluationService {
 	 * @param phrase
 	 * @return
 	 */
-	public String acronym(String phrase) {
-		// TODO Write an implementation for this method declaration
-		return null;
+	public static String acronym(String phrase) {
+
+		phrase = phrase.toUpperCase();
+		String[] stuff = phrase.split("-|\\s");
+		String acronym = "";
+		for (int i = 0; i < stuff.length; i++) {
+			acronym = acronym + stuff[i].charAt(0);
+
+		}
+		return acronym;
 	}
 
 	/**
@@ -96,20 +110,30 @@ public class EvaluationService {
 		}
 
 		public boolean isEquilateral() {
-			// TODO Write an implementation for this method declaration
-			return false;
+			if (sideOne == sideTwo && sideTwo == sideThree) {
+				return true;
+			} else {
+				return false;
+			}
+
 		}
 
 		public boolean isIsosceles() {
-			// TODO Write an implementation for this method declaration
-			return false;
+			if (sideOne == sideTwo || sideOne == sideThree || sideTwo == sideThree) {
+				return true;
+			} else {
+				return false;
+			}
 		}
 
 		public boolean isScalene() {
-			// TODO Write an implementation for this method declaration
-			return false;
-		}
+			if (sideOne != sideTwo || sideOne != sideThree || sideTwo != sideThree) {
+				return true;
+			} else {
+				return false;
+			}
 
+		}
 	}
 
 	/**
@@ -127,9 +151,44 @@ public class EvaluationService {
 	 * @param string
 	 * @return
 	 */
-	public int getScrabbleScore(String string) {
-		// TODO Write an implementation for this method declaration
-		return 0;
+	public int getScrabbleScore(String word) {
+		word = word.toUpperCase();
+		HashMap<Character, Integer> Scrabble = new HashMap<Character, Integer>();
+
+		Scrabble.put('A', 1);
+		Scrabble.put('B', 3);
+		Scrabble.put('C', 3);
+		Scrabble.put('D', 2);
+		Scrabble.put('E', 1);
+		Scrabble.put('F', 4);
+		Scrabble.put('G', 2);
+		Scrabble.put('H', 4);
+		Scrabble.put('I', 1);
+		Scrabble.put('J', 8);
+		Scrabble.put('K', 5);
+		Scrabble.put('L', 1);
+		Scrabble.put('M', 3);
+		Scrabble.put('N', 1);
+		Scrabble.put('O', 1);
+		Scrabble.put('P', 3);
+		Scrabble.put('Q', 10);
+		Scrabble.put('R', 1);
+		Scrabble.put('S', 1);
+		Scrabble.put('T', 1);
+		Scrabble.put('U', 1);
+		Scrabble.put('V', 4);
+		Scrabble.put('W', 4);
+		Scrabble.put('X', 8);
+		Scrabble.put('Y', 4);
+		Scrabble.put('Z', 10);
+
+		int sum = 0;
+		for (int i = 0; i < word.length(); i++) {
+
+			sum += Scrabble.get(word.charAt(i));
+		}
+
+		return sum;
 	}
 
 	/**
@@ -163,9 +222,13 @@ public class EvaluationService {
 	 * Note: As this exercise only deals with telephone numbers used in
 	 * NANP-countries, only 1 is considered a valid country code.
 	 */
-	public String cleanPhoneNumber(String string) {
-		// TODO Write an implementation for this method declaration
-		return null;
+	public static String cleanPhoneNumber(String number) {
+		String result = number.replaceAll("[^0-9]", "");
+		if (result.length() > 11) {
+			throw new IllegalArgumentException("Too many Values");
+		} else if (result.length() < 10)
+			throw new IllegalArgumentException("Illegal input");
+		return result;
 	}
 
 	/**
@@ -177,9 +240,24 @@ public class EvaluationService {
 	 * @param string
 	 * @return
 	 */
-	public Map<String, Integer> wordCount(String string) {
-		// TODO Write an implementation for this method declaration
-		return null;
+	public Map<String, Integer> wordCount(String count) {
+
+		HashMap<String, Integer> wordCount = new HashMap<String, Integer>();
+
+		String[] strArray = count.split("\\s|,");
+
+		for (String c : strArray) {
+			if (wordCount.containsKey(c)) {
+
+				wordCount.put(c, wordCount.get(c) + 1);
+			} else {
+
+				wordCount.put(c, 1);
+			}
+		}
+		wordCount.remove("");
+
+		return wordCount;
 	}
 
 	/**
@@ -217,12 +295,13 @@ public class EvaluationService {
 	 * binary search is a dichotomic divide and conquer search algorithm.
 	 * 
 	 */
-	static class BinarySearch<T> {
+	static class BinarySearch<T extends Comparable<T>> {
 		private List<T> sortedList;
 
 		public int indexOf(T t) {
-			// TODO Write an implementation for this method declaration
-			return 0;
+			int search = Collections.binarySearch(sortedList, t);
+
+			return search;
 		}
 
 		public BinarySearch(List<T> sortedList) {
@@ -258,7 +337,23 @@ public class EvaluationService {
 	 * @return
 	 */
 	public String toPigLatin(String string) {
-		// TODO Write an implementation for this method declaration
+		char[] vowels = { 'a', 'e', 'i', 'o', 'u' };
+		int start = 0;
+		int vowel = 0;
+		if (string.charAt(0) == vowels[0] || string.charAt(0) == vowels[1] || string.charAt(0) == vowels[2]
+				|| string.charAt(0) == vowels[3] || string.charAt(0) == vowels[4]) {
+			string = string + "ay";
+			return string;
+
+		}
+		for (int i = 1; i < string.length(); i++) {
+			for (int f = 0; f <= vowels.length - 1; i++) {
+				if (string.charAt(i) == vowels[f]) {
+					vowel = i;
+				}
+			}
+		}
+
 		return null;
 	}
 
@@ -293,7 +388,8 @@ public class EvaluationService {
 	 * @return
 	 */
 	public List<Long> calculatePrimeFactorsOf(long l) {
-		// TODO Write an implementation for this method declaration
+//		ArrayList num = new Arraylist();
+
 		return null;
 	}
 
@@ -332,8 +428,23 @@ public class EvaluationService {
 		}
 
 		public String rotate(String string) {
-			// TODO Write an implementation for this method declaration
-			return null;
+
+			StringBuilder strBuilder = new StringBuilder();
+			char c;
+			for (int i = 0; i < string.length(); i++) {
+				c = string.charAt(i);
+
+				if (Character.isLetter(c)) {
+					c = (char) (string.charAt(i) + key);
+
+					if ((Character.isLowerCase(string.charAt(i)) && c > 'z')
+							|| (Character.isUpperCase(string.charAt(i)) && c > 'Z'))
+
+						c = (char) (string.charAt(i) - (26 - key));
+				}
+				strBuilder.append(c);
+			}
+			return strBuilder.toString();
 		}
 
 	}
@@ -350,9 +461,35 @@ public class EvaluationService {
 	 * @param i
 	 * @return
 	 */
-	public int calculateNthPrime(int i) {
-		// TODO Write an implementation for this method declaration
-		return 0;
+	public int calculateNthPrime(int i) throws IllegalArgumentException {
+
+		int count = 1;
+		int result = 2;
+
+		if (i <= 0) {
+			throw new IllegalArgumentException("please enter a positive number");
+		} else if (i == 1) {
+			return result;
+
+		}
+		for (int j = 3; j <= Integer.MAX_VALUE-1; j++) {
+			if (count == i) {
+				break;
+
+			}
+			for (int k = 2; k <= j; k++) {
+				if (j%k == 0 && j != k) {
+					break;
+				}
+				if (j == k) {
+					count++;
+					result=j;
+					break;
+				}
+
+			}
+		}
+		return result;
 	}
 
 	/**
@@ -387,9 +524,7 @@ public class EvaluationService {
 		 * @param string
 		 * @return
 		 */
-		public static String encode(String string) {
-			// TODO Write an implementation for this method declaration
-			return null;
+		public static String encode(String code) {
 		}
 
 		/**
@@ -397,11 +532,12 @@ public class EvaluationService {
 		 * 
 		 * @param string
 		 * @return
-		 */
+		 */  
 		public static String decode(String string) {
 			// TODO Write an implementation for this method declaration
 			return null;
 		}
+
 	}
 
 	/**
@@ -552,5 +688,4 @@ public class EvaluationService {
 		// TODO Write an implementation for this method declaration
 		return 0;
 	}
-
 }

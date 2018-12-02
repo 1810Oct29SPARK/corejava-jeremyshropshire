@@ -333,7 +333,7 @@ public class EvaluationServiceTest {
 	@Test
 	public void singleDigitsAreArmstrongNumbers() {
 		int input = 5;
-
+ 
 		assertTrue(evaluationService.isArmstrongNumber(input));
 	}
 
