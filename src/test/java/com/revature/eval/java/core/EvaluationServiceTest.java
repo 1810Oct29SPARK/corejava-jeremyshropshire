@@ -301,7 +301,7 @@ public class EvaluationServiceTest {
 
 	/*******************************************************************
 	 * Question 8
-	 ******************************************************************/
+	 **************************************** **************************/
 	@Test
 	public void testWordBeginningWithA() {
 		assertEquals("appleay", evaluationService.toPigLatin("apple"));

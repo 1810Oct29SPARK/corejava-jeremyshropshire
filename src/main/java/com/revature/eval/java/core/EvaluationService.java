@@ -4,9 +4,10 @@ import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 
 public class EvaluationService {
 
@@ -337,24 +338,47 @@ public class EvaluationService {
 	 * @return
 	 */
 	public String toPigLatin(String string) {
-		char[] vowels = { 'a', 'e', 'i', 'o', 'u' };
-		int start = 0;
-		int vowel = 0;
-		if (string.charAt(0) == vowels[0] || string.charAt(0) == vowels[1] || string.charAt(0) == vowels[2]
-				|| string.charAt(0) == vowels[3] || string.charAt(0) == vowels[4]) {
-			string = string + "ay";
-			return string;
+		String[] word = string.toLowerCase().split(" ");
 
+		StringBuilder[] sb = new StringBuilder[word.length];
+		StringBuilder finalSb = new StringBuilder();
+		for (int i = 0; i < word.length; i++) {
+			sb[i] = new StringBuilder(word[i]);
 		}
-		for (int i = 1; i < string.length(); i++) {
-			for (int f = 0; f <= vowels.length - 1; i++) {
-				if (string.charAt(i) == vowels[f]) {
-					vowel = i;
+
+		HashSet<Character> hash = new HashSet<>();
+		hash.add('a');
+		hash.add('e');
+		hash.add('i');
+		hash.add('o');
+		hash.add('u');
+
+		for (int k = 0; k < sb.length; k++) {
+
+			int constCount = 0;
+
+			for (int i = 0; i < word[k].length(); i++) {
+				if (word[k].charAt(0) == 'q') {
+					constCount = 2;
+					break;
+				} else if (hash.contains(word[k].charAt(i))) {
+					constCount = i;
+					break;
 				}
 			}
-		}
 
-		return null;
+			for (int i = 0; i < constCount; i++) {
+				sb[k].append(word[k].charAt(i));
+				sb[k].deleteCharAt(0);
+			}
+			sb[k].append("ay");
+			finalSb.append(sb[k].toString());
+
+			if (k < (sb.length - 1)) {
+				finalSb.append(" ");
+			}
+		}
+		return finalSb.toString();
 	}
 
 	/**
@@ -373,8 +397,21 @@ public class EvaluationService {
 	 * @return
 	 */
 	public boolean isArmstrongNumber(int input) {
-		// TODO Write an implementation for this method declaration
-		return false;
+
+		String num = input + "";
+		int numbers = num.length();
+		int copyInput = input;
+		int sum = 0;
+		while (copyInput != 0) {
+			int lastDigit = copyInput % 10;
+			sum = sum + (int) Math.pow(lastDigit, numbers);
+			copyInput = copyInput / 10;
+		}
+		if (sum == input) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	/**
@@ -387,10 +424,24 @@ public class EvaluationService {
 	 * @param l
 	 * @return
 	 */
-	public List<Long> calculatePrimeFactorsOf(long l) {
-//		ArrayList num = new Arraylist();
+	public List<Long> calculatePrimeFactorsOf(long n) {
 
-		return null;
+		List<Long> primeNumbers = new LinkedList<Long>();
+		long number = n;
+		if (number <= 2) {
+			primeNumbers.add(number);
+			return primeNumbers;
+		}
+		for (long i = 2; i <= number; i++) {
+			while (number % i == 0) {
+				primeNumbers.add(i);
+				number = number / i;
+
+			}
+
+		}
+		return primeNumbers;
+
 	}
 
 	/**
@@ -472,18 +523,18 @@ public class EvaluationService {
 			return result;
 
 		}
-		for (int j = 3; j <= Integer.MAX_VALUE-1; j++) {
+		for (int j = 3; j <= Integer.MAX_VALUE - 1; j++) {
 			if (count == i) {
 				break;
 
 			}
 			for (int k = 2; k <= j; k++) {
-				if (j%k == 0 && j != k) {
+				if (j % k == 0 && j != k) {
 					break;
 				}
 				if (j == k) {
 					count++;
-					result=j;
+					result = j;
 					break;
 				}
 
@@ -524,7 +575,46 @@ public class EvaluationService {
 		 * @param string
 		 * @return
 		 */
-		public static String encode(String code) {
+		public static String encode(String string) {
+			String str = string.toLowerCase();
+			str = str.replaceAll("[^0-9a-z]", "");
+			char[] chr = str.toCharArray();
+			char[] chrRegular = new char[26];
+			char[] chrReverse = new char[26];
+			char c;
+			int counter = 0;
+			String temp = "";
+
+			for (c = 'z'; c >= 'a'; c--) {
+				chrRegular[counter] = c;
+				counter++;
+			}
+			counter = 0;
+			for (c = 'a'; c <= 'z'; c++) {
+				chrReverse[counter] = c;
+				counter++;
+
+			}
+			counter = 0;
+			int j = 0;
+			for (int i = 0; i < chr.length; i++) {
+				counter++;
+				for (j = 0; j < 26; j++) {
+					if (chr[i] == chrReverse[j]) {
+						chr[i] = chrRegular[j];
+						temp += chr[i];
+						break;
+					} else if (chr[i] > '0' && chr[i] < '9') {
+						temp += chr[i];
+						break;
+					}
+				}
+				if (counter % 5 == 0 && i != 0 && counter < chr.length) {
+					temp += " ";
+				}
+			}
+
+			return temp;
 		}
 
 		/**
@@ -532,12 +622,46 @@ public class EvaluationService {
 		 * 
 		 * @param string
 		 * @return
-		 */  
+		 */
 		public static String decode(String string) {
-			// TODO Write an implementation for this method declaration
-			return null;
-		}
+			String str = string.toLowerCase();
+			str = str.replaceAll("\\s", "");
+			char[] chr = str.toCharArray();
+			char[] chrRegular = new char[26];
+			char[] chrReverse = new char[26];
+			char c;
+			int counter = 0;
+			String temp = "";
 
+			for (c = 'z'; c >= 'a'; c--) {
+				chrReverse[counter] = c;
+				counter++;
+			}
+			counter = 0;
+			for (c = 'a'; c <= 'z'; c++) {
+				chrRegular[counter] = c;
+				counter++;
+
+			}
+			counter = 0;
+			int j = 0;
+			for (int i = 0; i <= chr.length - 1; i++) {
+				counter++;
+				for (j = 0; j < 26; j++) {
+					if (chr[i] == chrReverse[j]) {
+						chr[i] = chrRegular[j];
+						temp += chr[i];
+						break;
+					} else if (chr[i] > '0' && chr[i] < '9') {
+						temp += chr[i];
+						break;
+					}
+				}
+
+			}
+
+			return temp;
+		}
 	}
 
 	/**
@@ -562,9 +686,31 @@ public class EvaluationService {
 	 * @param string
 	 * @return
 	 */
-	public boolean isValidIsbn(String string) {
-		// TODO Write an implementation for this method declaration
-		return false;
+	public boolean isValidIsbn(String isbn) {
+
+		isbn = isbn.replaceAll("-", "");
+
+		// must be a 10 digit ISBN
+		if (isbn.length() != 10) {
+			return false;
+		}
+
+		try {
+			int tot = 0;
+			for (int i = 0; i < 9; i++) {
+				int digit = Integer.parseInt(isbn.substring(i, i + 1));
+				tot += ((10 - i) * digit);
+			}
+
+			String checksum = Integer.toString((11 - (tot % 11)) % 11);
+			if ("10".equals(checksum)) {
+				checksum = "X";
+			}
+
+			return checksum.equals(isbn.substring(9));
+		} catch (NumberFormatException nfe) {
+			return false;
+		}
 	}
 
 	/**
@@ -581,8 +727,29 @@ public class EvaluationService {
 	 * @return
 	 */
 	public boolean isPangram(String string) {
-		// TODO Write an implementation for this method declaration
-		return false;
+
+		String str = string.toLowerCase();
+
+		boolean[] mark = new boolean[26];
+
+		// For indexing in mark[]
+		int index = 0;
+
+		// look through all characters
+		for (int i = 0; i < str.length(); i++) {
+			if ('a' <= str.charAt(i) && str.charAt(i) <= 'z')
+
+				index = str.charAt(i) - 'a';
+
+			mark[index] = true;
+		}
+
+		// Return false if any character is unmarked
+		for (int i = 0; i <= 25; i++)
+			if (mark[i] == false)
+				return (false);
+
+		return (true);
 	}
 
 	/**
@@ -612,8 +779,21 @@ public class EvaluationService {
 	 * @return
 	 */
 	public int getSumOfMultiples(int i, int[] set) {
-		// TODO Write an implementation for this method declaration
-		return 0;
+		HashSet<Integer> mults = new HashSet<Integer>();
+		for (int j = 1; j < i; j++) {
+			for (int k = 0; k < set.length; k++) {
+				if (j % set[k] == 0) {
+					mults.add(j);
+				}
+			}
+		}
+
+		List<Integer> realMults = new ArrayList<Integer>(mults);
+		int sum = 0;
+		for (int j = 0; j < mults.size(); j++) {
+			sum += realMults.get(j);
+		}
+		return sum;
 	}
 
 	/**
