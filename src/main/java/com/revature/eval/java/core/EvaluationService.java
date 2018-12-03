@@ -1,5 +1,8 @@
 package com.revature.eval.java.core;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -761,8 +764,13 @@ public class EvaluationService {
 	 * @return
 	 */
 	public Temporal getGigasecondDate(Temporal given) {
-		// TODO Write an implementation for this method declaration
-		return null;
+		long GSeconds = 1000000000;
+		if (!given.isSupported(ChronoUnit.SECONDS)) {
+			LocalDate dateInput = (LocalDate) given;
+			LocalDateTime newDate = dateInput.atStartOfDay();
+			return newDate.plus(GSeconds, ChronoUnit.SECONDS);
+		}
+		return given.plus(GSeconds, ChronoUnit.SECONDS);
 	}
 
 	/**
@@ -833,10 +841,42 @@ public class EvaluationService {
 	 * @return
 	 */
 	public boolean isLuhnValid(String string) {
-		// TODO Write an implementation for this method declaration
-		return false;
-	}
-
+		 String luhn = string.replaceAll("\\s", "");
+	        if (luhn.length() < 2) {
+	            return false;
+	        }
+	        for (char c : luhn.toCharArray()) {
+	            if (Character.isLetter(c) || !Character.isDigit(c)) {
+	                return false;
+	            }
+	        }
+	        int sum = 0;
+	        int temp = 0;
+	        for (int i = luhn.length() - 2; i >= 0; i -= 2) {
+	            temp = Integer.parseInt("" + luhn.charAt(i));
+	            temp = temp * 2;
+	            if (temp > 9 && i != 1) {
+	                temp -= 9;
+	                sum += temp + Character.getNumericValue(luhn.charAt(i + 1));
+	            } else if (temp > 9 && i == 1) {
+	                temp -= 9;
+	                sum += temp + Character.getNumericValue(luhn.charAt(i - 1))
+	                        + Character.getNumericValue(luhn.charAt(i + 1));
+	            } else if (temp <= 9 && i != 1) {
+	                sum += temp + Character.getNumericValue(luhn.charAt(i + 1));
+	            } else if (temp <= 9 && i == 1) {
+	                sum += temp + Character.getNumericValue(luhn.charAt(i - 1))
+	                        + Character.getNumericValue(luhn.charAt(i + 1));
+	            }
+	        }
+	        if (sum % 10 == 0) {
+	            return true;
+	        } else {
+	            return false;
+	        }
+	    }
+		
+	
 	/**
 	 * 20. Parse and evaluate simple math word problems returning the answer as an
 	 * integer.
@@ -865,7 +905,22 @@ public class EvaluationService {
 	 * @return
 	 */
 	public int solveWordProblem(String string) {
-		// TODO Write an implementation for this method declaration
-		return 0;
-	}
+		String[] problem = string.split("[ ?]+");
+        int calculation = 0;
+        switch (problem[3]) {
+        case "plus":
+            calculation = Integer.parseInt(problem[2]) + Integer.parseInt(problem[4]);
+            break;
+        case "minus":
+            calculation = Integer.parseInt(problem[2]) - Integer.parseInt(problem[4]);
+            break;
+        case "multiplied":
+            calculation = (Integer.parseInt(problem[2])) * (Integer.parseInt(problem[5]));
+            break;
+        case "divided":
+            calculation = (Integer.parseInt(problem[2])) / (Integer.parseInt(problem[5]));
+            break;
+        }
+        return calculation;
+    }
 }
